@@ -4,6 +4,7 @@ resource "aws_key_pair" "my_new_key" {
   key_name   = "ansible-key"
 
   public_key = file("ansible-key.pub")
+  
 }
 #VPC
 resource "aws_default_vpc" "default" {
@@ -14,7 +15,7 @@ resource "aws_default_vpc" "default" {
 
 resource "aws_security_group" "ec2_sg" {
 
-  name        = "terraform-sg"
+  name        = "$(var.env)-terraform-sg"
   description = "Allow SSH and HTTP"
 
   # SSH Port
@@ -42,18 +43,19 @@ resource "aws_security_group" "ec2_sg" {
   }
 }
 
+
 # ec2.tf
 
 resource "aws_instance" "servers" {
 
   for_each = tomap({
-    master-node     = "ami-05d62b9bc5a6ca605"
+    master-node     = "ami-05d62b9bc5a6ca605"  # UBUNTU
 
-    my-server1      = "ami-05d62b9bc5a6ca605"
+    my-server1      = "ami-0754facaaac92a5bb"   # REDHAT
 
-    my-server2      = "ami-0754facaaac92a5bb"
+    my-server2      = "ami-00263659a97a6c29c"     # AMAZON  LINUX   
 
-    my-server3 = "ami-0b2ab3a97a77bd35e"
+    my-server3 = "ami-05d62b9bc5a6ca605"  # UBUNTU
 
   })
 
@@ -78,5 +80,6 @@ resource "aws_instance" "servers" {
   tags = {
 
     Name = each.key
+   
   }
 }
